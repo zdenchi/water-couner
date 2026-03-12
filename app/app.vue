@@ -23,21 +23,28 @@ const showInstallToast = () => {
     description: 'Install the app to use it offline and on your home screen.',
     duration: 0,
     id: 'install-pwa',
+    ui: {
+      root: 'relative p-6 rounded-xl',
+      title: 'text-lg font-semibold',
+      description: 'text-base',
+      actions: 'mt-3 gap-2',
+      close: 'absolute right-2 top-2',
+    },
+    close: {
+      size: 'xs',
+      color: 'neutral',
+      variant: 'ghost',
+    },
+    closeIcon: 'i-lucide-x',
     actions: [
       {
         variant: 'solid',
         color: 'success',
+        size: 'lg',
         label: 'Install',
         onClick: (e) => {
           e.stopPropagation()
           installPwa()
-        },
-      },
-      {
-        label: 'Close',
-        onClick: (e) => {
-          e.stopPropagation()
-          offerInstallPrompt.value = false
         },
       },
     ],
