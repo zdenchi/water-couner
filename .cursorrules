@@ -8,5 +8,8 @@ When generating commit messages (via the sparkle button or chat):
 - Format: <type>: <description> (e.g., "style: adjust EventsTable height").
 - Never add a body/description unless the diff is massive.
 
+[Nuxt]
+When working with Nuxt (routing, composables, config, app structure, server, etc.), use the MCP server user-nuxt: check tool schemas before calling, and prefer its tools for docs and examples.
+
 [Nuxt UI]
 When working with Nuxt UI components (imports from #ui, @nuxt/ui, or nuxt-ui), use the MCP server user-nuxt-ui: check tool schemas before calling, and prefer its tools for docs, examples, and component usage.

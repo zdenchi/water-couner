@@ -1,6 +1,7 @@
 <script setup lang="ts">
 const props = defineProps<{
   count: number
+  loading?: boolean
 }>()
 
 const emit = defineEmits<{
@@ -47,6 +48,8 @@ const onDrinkClick = () => {
       <UButton
         color="warning"
         variant="subtle"
+        :loading="loading"
+        :disabled="loading"
         @click="onDrinkClick"
         icon="i-streamline-sharp-color:water-drop-flat"
         :ui="{ leadingIcon: 'size-4 shrink-0' }"
