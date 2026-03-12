@@ -1,18 +1,16 @@
 <script setup lang="ts">
 import { useStorage } from '@vueuse/core'
+import { isPwaInstalled } from './utils/pwa'
 
 const { $pwa } = useNuxtApp()
 const toast = useToast()
 
 const offerInstallPrompt = useStorage('offerInstallPrompt', true)
-const isPWAInstalled = computed(() => {
-  if (import.meta.client) {
-    return (
-      window.matchMedia('(display-mode: standalone)').matches ||
-      (window.navigator as any).standalone === true
-    )
-  }
-})
+const isPwaInstalledValue = ref(false)
+
+const updatePwaInstalled = () => {
+  isPwaInstalledValue.value = isPwaInstalled()
+}
 
 const actions = [
   {
@@ -41,9 +39,12 @@ function installPwa() {
 }
 
 onMounted(async () => {
+  updatePwaInstalled()
+  window.addEventListener('appinstalled', updatePwaInstalled)
+
   await nextTick(() => {
     if (
-      !isPWAInstalled.value &&
+      !isPwaInstalledValue.value &&
       offerInstallPrompt.value &&
       $pwa?.showInstallPrompt
     ) {
@@ -74,6 +75,10 @@ onMounted(async () => {
       })
     }
   })
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('appinstalled', updatePwaInstalled)
 })
 </script>
 
