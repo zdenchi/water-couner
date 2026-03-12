@@ -28,7 +28,7 @@ const showInstallToast = () => {
       title: 'text-lg font-semibold',
       description: 'text-base',
       actions: 'mt-3 gap-2',
-      close: 'absolute right-2 top-2',
+      close: 'absolute right-2 top-2 text-white hover:text-white/80',
     },
     close: {
       size: 'xs',
