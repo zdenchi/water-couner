@@ -1,10 +1,9 @@
 <script setup lang="ts">
+import { formatAmount } from '../utils/waterFormat'
+import type { Totals } from '../types/water'
+
 const props = defineProps<{
-  totals: {
-    currentMonth: number
-    lastMonth: number
-    allTime: number
-  }
+  totals: Totals
 }>()
 </script>
 
@@ -26,13 +25,13 @@ const props = defineProps<{
         <tbody>
           <tr class="text-sm">
             <td class="px-2 py-2 font-semibold">
-              {{ props.totals.currentMonth.toFixed(2) }}
+              {{ formatAmount(props.totals.currentMonth) }}
             </td>
             <td class="px-2 py-2 font-semibold">
-              {{ props.totals.lastMonth.toFixed(2) }}
+              {{ formatAmount(props.totals.lastMonth) }}
             </td>
             <td class="px-2 py-2 font-semibold">
-              {{ props.totals.allTime.toFixed(2) }}
+              {{ formatAmount(props.totals.allTime) }}
             </td>
           </tr>
         </tbody>

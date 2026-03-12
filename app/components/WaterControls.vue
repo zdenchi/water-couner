@@ -18,34 +18,42 @@ const onDrinkClick = () => {
 </script>
 
 <template>
-  <UFieldGroup size="lg" class="w-full">
-    <UInputNumber
-      class="w-full"
-      :model-value="count"
-      @update:model-value="onUpdateCount"
-      :min="0.5"
-      :max="5"
-      :step="0.1"
-      :increment="{
-        color: 'neutral',
-        variant: 'solid',
-        size: 'sm',
-      }"
-      :decrement="{
-        color: 'neutral',
-        variant: 'solid',
-        size: 'sm',
-      }"
-    />
+  <div class="w-full">
+    <UFieldGroup size="lg">
+      <ClientOnly>
+        <div class="min-w-0 flex-1">
+          <UInputNumber
+            aria-label="Amount in litres"
+            :model-value="count"
+            @update:model-value="onUpdateCount"
+            :min="0.5"
+            :max="5"
+            :step="0.1"
+            :increment="{
+              color: 'neutral',
+              variant: 'solid',
+              size: 'sm',
+            }"
+            :decrement="{
+              color: 'neutral',
+              variant: 'solid',
+              size: 'sm',
+            }"
+          />
+        </div>
+        <template #fallback>
+          <div class="min-w-0 flex-1 h-10 rounded-md border border-gray-700/50" />
+        </template>
+      </ClientOnly>
 
-    <UButton
+      <UButton
       color="warning"
       variant="subtle"
       @click="onDrinkClick"
       icon="i-streamline-sharp-color:water-drop-flat"
       :ui="{ leadingIcon: 'size-4 shrink-0' }"
       >Drink</UButton
-    >
-  </UFieldGroup>
+      >
+    </UFieldGroup>
+  </div>
 </template>
-

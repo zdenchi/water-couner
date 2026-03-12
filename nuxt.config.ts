@@ -7,6 +7,8 @@ export default defineNuxtConfig({
 
   app: {
     head: {
+      htmlAttrs: { lang: 'en' },
+      title: 'BCounter',
       link: [
         {
           rel: 'stylesheet',
