@@ -1,4 +1,6 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+const isDev = import.meta.dev
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
@@ -9,25 +11,33 @@ export default defineNuxtConfig({
     head: {
       htmlAttrs: { lang: 'en' },
       title: 'BCounter',
-      link: [
-        {
-          rel: 'stylesheet',
-          href: 'https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap',
-        },
-      ],
     },
   },
 
   modules: [
-    '@nuxt/eslint',
-    '@nuxt/hints',
+    '@nuxt/fonts',
     '@nuxt/ui',
     '@vite-pwa/nuxt',
     '@vueuse/nuxt',
+    ...(isDev ? ['@nuxt/eslint', '@nuxt/hints'] : []),
   ],
+
+  fonts: {
+    families: [
+      {
+        name: 'Inter',
+        provider: 'google',
+        weights: [300, 400, 500, 600, 700],
+      },
+    ],
+  },
 
   routeRules: {
     '/': { prerender: true },
+  },
+
+  nitro: {
+    preset: 'vercel-static',
   },
 
   pwa: {

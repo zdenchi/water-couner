@@ -4,13 +4,18 @@ const DB_NAME = 'water'
 const DB_VERSION = 2
 const STORE_NAME = 'drinks'
 
-function openDb(): Promise<IDBDatabase> {
-  return new Promise((resolve, reject) => {
-    if (!import.meta.client || !('indexedDB' in window)) {
-      reject(new Error('IndexedDB недоступен'))
-      return
-    }
+let dbInstance: IDBDatabase | null = null
+let dbPromise: Promise<IDBDatabase> | null = null
 
+function openDb(): Promise<IDBDatabase> {
+  if (dbInstance) return Promise.resolve(dbInstance)
+  if (dbPromise) return dbPromise
+
+  if (!import.meta.client || !('indexedDB' in window)) {
+    return Promise.reject(new Error('IndexedDB недоступен'))
+  }
+
+  dbPromise = new Promise((resolve, reject) => {
     const request = window.indexedDB.open(DB_NAME, DB_VERSION)
 
     request.onupgradeneeded = () => {
@@ -20,11 +25,25 @@ function openDb(): Promise<IDBDatabase> {
       }
     }
 
-    request.onsuccess = () => resolve(request.result)
+    request.onsuccess = () => {
+      const db = request.result
+      db.onversionchange = () => {
+        db.close()
+        dbInstance = null
+        dbPromise = null
+      }
+      dbInstance = db
+      dbPromise = null
+      resolve(db)
+    }
+
     request.onerror = () => {
+      dbPromise = null
       reject(request.error ?? new Error('Ошибка открытия IndexedDB'))
     }
   })
+
+  return dbPromise
 }
 
 export async function getAllDrinks(): Promise<DrinkRecord[]> {
@@ -36,9 +55,6 @@ export async function getAllDrinks(): Promise<DrinkRecord[]> {
 
     request.onsuccess = () => resolve(request.result as DrinkRecord[])
     request.onerror = () => reject(request.error ?? new Error('Ошибка чтения'))
-
-    tx.oncomplete = () => db.close()
-    tx.onerror = () => db.close()
   })
 }
 
@@ -52,8 +68,5 @@ export async function addDrink(amount: number): Promise<void> {
 
     request.onsuccess = () => resolve()
     request.onerror = () => reject(request.error ?? new Error('Ошибка записи'))
-
-    tx.oncomplete = () => db.close()
-    tx.onerror = () => db.close()
   })
 }

@@ -1,4 +1,4 @@
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, shallowRef } from 'vue'
 import type { DayData, DrinkRecord, Totals } from '../types/water'
 import { addDrink, getAllDrinks } from '../utils/waterStorage'
 
@@ -6,12 +6,7 @@ function getTodayKey() {
   return new Date().toISOString().slice(0, 10)
 }
 
-function todayDrinks(records: DrinkRecord[]) {
-  const today = getTodayKey()
-  return records.filter((r) => r.at.startsWith(today))
-}
-
-function calcTotals(records: DrinkRecord[]): Totals {
+function processRecords(records: DrinkRecord[]) {
   const now = new Date()
   const year = now.getFullYear()
   const month = now.getMonth()
@@ -31,6 +26,8 @@ function calcTotals(records: DrinkRecord[]): Totals {
   let allTimeTotal = 0
 
   const todayKey = getTodayKey()
+  const drinksToday: DrinkRecord[] = []
+  const byDay = new Map<string, DrinkRecord[]>()
 
   for (const r of records) {
     const dayKey = r.at.slice(0, 10)
@@ -40,6 +37,7 @@ function calcTotals(records: DrinkRecord[]): Totals {
 
     if (dayKey === todayKey) {
       todayTotal += r.amount
+      drinksToday.push(r)
     }
 
     if (monthKey === currentMonthKey) {
@@ -47,36 +45,37 @@ function calcTotals(records: DrinkRecord[]): Totals {
     } else if (monthKey === lastMonthKey) {
       lastMonthTotal += r.amount
     }
+
+    const dayEvents = byDay.get(dayKey)
+    if (dayEvents) {
+      dayEvents.push(r)
+    } else {
+      byDay.set(dayKey, [r])
+    }
   }
 
-  return {
+  const totals: Totals = {
     today: todayTotal,
     currentMonth: currentMonthTotal,
     lastMonth: lastMonthTotal,
     allTime: allTimeTotal,
   }
-}
 
-function lastThreeDaysFromRecords(records: DrinkRecord[]): DayData[] {
-  const byDay = new Map<string, DrinkRecord[]>()
-  for (const r of records) {
-    const key = r.at.slice(0, 10)
-    if (!byDay.has(key)) byDay.set(key, [])
-    byDay.get(key)!.push(r)
-  }
   const sortedKeys = [...byDay.keys()].sort().reverse().slice(0, 3)
-  return sortedKeys.reverse().map((dateKey) => {
-    const events = (byDay.get(dateKey) ?? []).sort(
+  const lastThreeDays = sortedKeys.reverse().map((dateKey) => {
+    const events = (byDay.get(dateKey) ?? []).slice().sort(
       (a, b) => new Date(a.at).getTime() - new Date(b.at).getTime(),
     )
     const total = events.reduce((sum, r) => sum + r.amount, 0)
     return { dateKey, total, events }
   })
+
+  return { drinksToday, lastThreeDays, totals }
 }
 
 export function useWaterTracker() {
-  const drinksToday = ref<DrinkRecord[]>([])
-  const lastThreeDays = ref<DayData[]>([])
+  const drinksToday = shallowRef<DrinkRecord[]>([])
+  const lastThreeDays = shallowRef<DayData[]>([])
   const totals = ref<Totals | null>(null)
   const loading = ref(true)
   const error = ref<string | null>(null)
@@ -87,9 +86,10 @@ export function useWaterTracker() {
 
   async function refreshData() {
     const all = await getAllDrinks()
-    drinksToday.value = todayDrinks(all)
-    lastThreeDays.value = lastThreeDaysFromRecords(all)
-    totals.value = calcTotals(all)
+    const processed = processRecords(all)
+    drinksToday.value = processed.drinksToday
+    lastThreeDays.value = processed.lastThreeDays
+    totals.value = processed.totals
   }
 
   async function drink(amount: number) {
