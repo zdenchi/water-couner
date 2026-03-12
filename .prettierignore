@@ -1,0 +1,33 @@
+# Dependencies
+node_modules
+bun.lockb
+
+# Build outputs
+.output
+.nuxt
+
+# Logs
+*.log
+logs
+
+# Local env files
+.env
+.env.*
+
+# Coverage
+coverage
+apps/*/coverage
+
+# Static assets – не форматируем
+public
+
+# Editor files
+.vscode
+.idea
+
+# Misc
+*.pid
+*.seed
+*.pid.lock
+
+generated

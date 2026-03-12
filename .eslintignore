@@ -1,0 +1,11 @@
+node_modules
+dist
+coverage
+.next
+.nuxt
+out
+build
+output
+bun.lockb
+*.config.cjs
+
