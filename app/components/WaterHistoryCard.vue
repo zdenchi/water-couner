@@ -9,20 +9,20 @@ const props = defineProps<{
 
 <template>
   <div
-    class="rounded-xl border border-gray-700/50 bg-gray-900/80 p-4 text-gray-100 shadow-lg"
+    class="rounded-xl border border-zinc-700/50 bg-zinc-900/80 p-4 text-gray-100 shadow-lg"
   >
     <div class="grid grid-cols-3 gap-4">
       <div
         v-for="day in days"
         :key="day.dateKey"
-        class="flex flex-col rounded-lg bg-gray-800/50 p-3"
+        class="flex flex-col rounded-lg bg-zinc-800/50 p-3"
       >
-        <div class="text-sm font-medium text-gray-300">
+        <div class="text-sm font-medium text-zinc-300">
           {{ formatDateKey(day.dateKey) }}
         </div>
-        <div class="text-xs text-gray-400">
+        <div class="text-xs text-zinc-400">
           Total:
-          <span class="font-semibold text-gray-200">{{
+          <span class="font-semibold text-zinc-200">{{
             formatAmount(day.total)
           }}</span>
         </div>

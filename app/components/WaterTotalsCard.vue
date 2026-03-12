@@ -9,7 +9,7 @@ const props = defineProps<{
 
 <template>
   <div
-    class="rounded-xl border border-gray-700/50 bg-gray-900/80 p-4 text-gray-100 shadow-lg"
+    class="rounded-xl border border-zinc-700/50 bg-zinc-900/80 p-4 text-gray-100 shadow-lg"
   >
     <div class="overflow-x-auto">
       <table class="min-w-full text-left text-sm">

@@ -12,7 +12,7 @@ const onDrink = () => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-6">
+  <div class="flex flex-col gap-4 rounded-lg bg-zinc-800 p-2">
     <div class="flex items-center gap-4">
       <WaterControls v-model:count="count" @drink="onDrink" />
 
@@ -24,4 +24,3 @@ const onDrink = () => {
     <LazyWaterHistoryCard v-if="lastThreeDays.length" :days="lastThreeDays" />
   </div>
 </template>
-
