@@ -12,6 +12,38 @@ const updatePwaInstalled = () => {
   isPwaInstalledValue.value = isPwaInstalled()
 }
 
+const showInstallToast = () => {
+  if (!import.meta.client) return
+  if (isPwaInstalledValue.value) return
+  if (!offerInstallPrompt.value) return
+  if (!$pwa?.showInstallPrompt) return
+
+  toast.add({
+    title: 'Install PWA',
+    description: 'Install the app to use it offline and on your home screen.',
+    duration: 0,
+    id: 'install-pwa',
+    actions: [
+      {
+        variant: 'solid',
+        color: 'success',
+        label: 'Install',
+        onClick: (e) => {
+          e.stopPropagation()
+          installPwa()
+        },
+      },
+      {
+        label: 'Close',
+        onClick: (e) => {
+          e.stopPropagation()
+          offerInstallPrompt.value = false
+        },
+      },
+    ],
+  })
+}
+
 const actions = [
   {
     variant: 'solid',
@@ -43,43 +75,21 @@ onMounted(async () => {
   window.addEventListener('appinstalled', updatePwaInstalled)
 
   await nextTick(() => {
-    if (
-      !isPwaInstalledValue.value &&
-      offerInstallPrompt.value &&
-      $pwa?.showInstallPrompt
-    ) {
-      toast.add({
-        title: 'Install PWA',
-        description:
-          'Install the app to use it offline and on your home screen.',
-        duration: 0,
-        id: 'install-pwa',
-        actions: [
-          {
-            variant: 'solid',
-            color: 'success',
-            label: 'Install',
-            onClick: (e) => {
-              e.stopPropagation()
-              installPwa()
-            },
-          },
-          {
-            label: 'Close',
-            onClick: (e) => {
-              e.stopPropagation()
-              offerInstallPrompt.value = false
-            },
-          },
-        ],
-      })
-    }
+    showInstallToast()
   })
 })
 
 onBeforeUnmount(() => {
   window.removeEventListener('appinstalled', updatePwaInstalled)
 })
+
+watch(
+  () => $pwa?.showInstallPrompt,
+  (ready) => {
+    if (ready) showInstallToast()
+  },
+  { immediate: true },
+)
 </script>
 
 <template>
