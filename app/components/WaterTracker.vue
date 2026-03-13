@@ -12,9 +12,13 @@ const onDrink = () => {
 </script>
 
 <template>
-  <div class="flex flex-col gap-4 rounded-lg bg-zinc-800 p-2">
+  <div class="m-2 flex flex-col gap-4 rounded-lg bg-zinc-800 p-2">
     <div class="flex items-center gap-4">
-      <WaterControls v-model:count="count" :loading="loading" @drink="onDrink" />
+      <WaterControls
+        v-model:count="count"
+        :loading="loading"
+        @drink="onDrink"
+      />
 
       <WaterTodaySummary :total="total" :loading="loading" :error="error" />
     </div>
@@ -39,6 +43,9 @@ const onDrink = () => {
         <USkeleton v-for="i in 3" :key="i" class="h-24 rounded-lg" />
       </div>
     </div>
-    <LazyWaterHistoryCard v-else-if="lastThreeDays.length" :days="lastThreeDays" />
+    <LazyWaterHistoryCard
+      v-else-if="lastThreeDays.length"
+      :days="lastThreeDays"
+    />
   </div>
 </template>
