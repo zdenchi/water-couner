@@ -38,6 +38,7 @@ export default defineNuxtConfig({
 
   nitro: {
     preset: 'vercel-static',
+    prerender: { routes: ['/'] },
   },
 
   pwa: {
