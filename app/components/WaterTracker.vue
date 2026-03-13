@@ -1,13 +1,22 @@
 <script setup lang="ts">
 import { useWaterTracker } from '../composables/useWaterTracker'
 
-const count = ref(1.5)
+const lastAmountCookie = useCookie<number | null>('water-last-amount', {
+  default: () => 1.5,
+})
+
+const count = ref(lastAmountCookie.value ?? 1.5)
 const { total, totals, lastThreeDays, loading, error, drink } =
   useWaterTracker()
 
 const onDrink = () => {
   const amount = Number(count.value)
+  if (Number.isNaN(amount)) {
+    return
+  }
+
   drink(amount)
+  lastAmountCookie.value = amount
 }
 </script>
 
