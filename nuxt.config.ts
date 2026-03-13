@@ -76,7 +76,28 @@ export default defineNuxtConfig({
       ],
     },
     workbox: {
-      globPatterns: ['**/*.{js,css,html,png,jpg,jpeg,svg,webp}'],
+      globPatterns: ['**/*.{js,css,html,png,jpg,jpeg,svg,webp,ico,woff2}'],
+      navigateFallback: '/',
+      runtimeCaching: [
+        {
+          urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'google-fonts-css',
+            expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 },
+            cacheableResponse: { statuses: [200] },
+          },
+        },
+        {
+          urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
+          handler: 'CacheFirst',
+          options: {
+            cacheName: 'google-fonts-webfonts',
+            expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 },
+            cacheableResponse: { statuses: [200] },
+          },
+        },
+      ],
     },
   },
 })
