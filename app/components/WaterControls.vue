@@ -21,31 +21,24 @@ const onDrinkClick = () => {
 <template>
   <div class="w-72">
     <UFieldGroup size="lg">
-      <div class="">
-        <UInputNumber
-          aria-label="Amount in litres"
-          :model-value="count"
-          @update:model-value="onUpdateCount"
-          :min="0.5"
-          :max="5"
-          :step="0.1"
-          :increment="{
-            color: 'neutral',
-            variant: 'solid',
-            size: 'sm',
-          }"
-          :decrement="{
-            color: 'neutral',
-            variant: 'solid',
-            size: 'sm',
-          }"
-        />
-      </div>
-      <template #fallback>
-        <div
-          class="h-10 w-16 min-w-0 flex-none rounded-md border border-gray-700/50"
-        />
-      </template>
+      <UInputNumber
+        aria-label="Amount in litres"
+        :model-value="count"
+        @update:model-value="onUpdateCount"
+        :min="0.5"
+        :max="5"
+        :step="0.1"
+        :increment="{
+          color: 'neutral',
+          variant: 'solid',
+          size: 'sm',
+        }"
+        :decrement="{
+          color: 'neutral',
+          variant: 'solid',
+          size: 'sm',
+        }"
+      />
 
       <UButton
         color="warning"
