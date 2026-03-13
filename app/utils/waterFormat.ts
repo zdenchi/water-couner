@@ -9,6 +9,11 @@ export function formatDateKey(dateKey: string) {
 }
 
 export function formatTime(iso: string) {
-  if (iso.length < 16) return iso
-  return iso.slice(11, 16)
+  const date = new Date(iso)
+  if (Number.isNaN(date.getTime())) return iso
+  return date.toLocaleTimeString('ru-RU', {
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: false,
+  })
 }

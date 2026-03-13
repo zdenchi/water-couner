@@ -19,9 +19,9 @@ const onDrinkClick = () => {
 </script>
 
 <template>
-  <div>
+  <div class="w-72">
     <UFieldGroup size="lg">
-      <div class="min-w-0 flex-1">
+      <div class="">
         <UInputNumber
           aria-label="Amount in litres"
           :model-value="count"
@@ -42,7 +42,9 @@ const onDrinkClick = () => {
         />
       </div>
       <template #fallback>
-        <div class="h-10 min-w-0 flex-1 rounded-md border border-gray-700/50" />
+        <div
+          class="h-10 w-16 min-w-0 flex-none rounded-md border border-gray-700/50"
+        />
       </template>
 
       <UButton
@@ -51,9 +53,7 @@ const onDrinkClick = () => {
         :loading="loading"
         :disabled="loading"
         @click="onDrinkClick"
-        icon="i-streamline-sharp-color:water-drop-flat"
-        :ui="{ leadingIcon: 'size-4 shrink-0' }"
-        >Drink</UButton
+        ><span class="text-xs">💧</span> Drink</UButton
       >
     </UFieldGroup>
   </div>

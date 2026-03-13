@@ -2,23 +2,27 @@ import { computed, onMounted, ref, shallowRef } from 'vue'
 import type { DayData, DrinkRecord, Totals } from '../types/water'
 import { addDrink, getAllDrinks } from '../utils/waterStorage'
 
+const pad = (n: number) => (n < 10 ? `0${n}` : `${n}`)
+
+function getLocalDateKey(date: Date) {
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(
+    date.getDate(),
+  )}`
+}
+
+function getLocalMonthKey(date: Date) {
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}`
+}
+
 function getTodayKey() {
-  return new Date().toISOString().slice(0, 10)
+  return getLocalDateKey(new Date())
 }
 
 function processRecords(records: DrinkRecord[]) {
   const now = new Date()
-  const year = now.getFullYear()
-  const month = now.getMonth()
-
-  const pad = (n: number) => (n < 10 ? `0${n}` : `${n}`)
-
-  const currentMonthKey = `${year}-${pad(month + 1)}`
-
-  const lastMonthDate = new Date(year, month - 1, 1)
-  const lastMonthKey = `${lastMonthDate.getFullYear()}-${pad(
-    lastMonthDate.getMonth() + 1,
-  )}`
+  const currentMonthKey = getLocalMonthKey(now)
+  const lastMonthDate = new Date(now.getFullYear(), now.getMonth() - 1, 1)
+  const lastMonthKey = getLocalMonthKey(lastMonthDate)
 
   let todayTotal = 0
   let currentMonthTotal = 0
@@ -30,8 +34,12 @@ function processRecords(records: DrinkRecord[]) {
   const byDay = new Map<string, DrinkRecord[]>()
 
   for (const r of records) {
-    const dayKey = r.at.slice(0, 10)
-    const monthKey = r.at.slice(0, 7)
+    const recordDate = new Date(r.at)
+    const isValidDate = !Number.isNaN(recordDate.getTime())
+    const dayKey = isValidDate ? getLocalDateKey(recordDate) : r.at.slice(0, 10)
+    const monthKey = isValidDate
+      ? getLocalMonthKey(recordDate)
+      : r.at.slice(0, 7)
 
     allTimeTotal += r.amount
 
@@ -63,9 +71,9 @@ function processRecords(records: DrinkRecord[]) {
 
   const sortedKeys = [...byDay.keys()].sort().reverse().slice(0, 3)
   const lastThreeDays = sortedKeys.reverse().map((dateKey) => {
-    const events = (byDay.get(dateKey) ?? []).slice().sort(
-      (a, b) => new Date(a.at).getTime() - new Date(b.at).getTime(),
-    )
+    const events = (byDay.get(dateKey) ?? [])
+      .slice()
+      .sort((a, b) => new Date(a.at).getTime() - new Date(b.at).getTime())
     const total = events.reduce((sum, r) => sum + r.amount, 0)
     return { dateKey, total, events }
   })
