@@ -1,6 +1,10 @@
 import { computed, onMounted, ref, shallowRef } from 'vue'
 import type { DayData, DrinkRecord, Totals } from '../types/water'
-import { addDrink, getAllDrinks, updateDrinkTime as updateDrinkAt } from '../utils/waterStorage'
+import {
+  addDrink,
+  getAllDrinks,
+  updateDrinkTime as updateDrinkAt,
+} from '../utils/waterStorage'
 
 const pad = (n: number) => (n < 10 ? `0${n}` : `${n}`)
 
@@ -69,7 +73,7 @@ function processRecords(records: DrinkRecord[]) {
     allTime: allTimeTotal,
   }
 
-  const sortedKeys = [...byDay.keys()].sort().reverse().slice(0, 3)
+  const sortedKeys = [...byDay.keys()].sort().reverse().slice(0, 30)
   const lastThreeDays = sortedKeys.reverse().map((dateKey) => {
     const events = (byDay.get(dateKey) ?? [])
       .slice()
@@ -124,7 +128,13 @@ export function useWaterTracker() {
     const sourceDate = new Date(record.at)
     if (Number.isNaN(sourceDate.getTime())) return
 
-    const [hours, minutes] = localTime.split(':').map(Number)
+    const parts = localTime.split(':')
+    const hourPart = parts[0]
+    const minutePart = parts[1]
+    if (!hourPart || !minutePart) return
+
+    const hours = Number(hourPart)
+    const minutes = Number(minutePart)
     if (
       Number.isNaN(hours) ||
       Number.isNaN(minutes) ||

@@ -6,6 +6,7 @@ const props = defineProps<{
   days: DayData[]
   loading?: boolean
 }>()
+const carouselStartIndex = computed(() => Math.max(props.days.length - 2, 0))
 
 const emit = defineEmits<{
   (e: 'edit-time', record: DrinkRecord, time: string): void
@@ -42,45 +43,53 @@ const onSaveEdit = () => {
   <div
     class="rounded-xl border border-zinc-700/50 bg-zinc-900/80 p-4 text-gray-100 shadow-lg"
   >
-    <div class="grid grid-cols-2 gap-4">
-      <div
-        v-for="day in days"
-        :key="day.dateKey"
-        class="flex flex-col rounded-lg bg-zinc-800/50 p-3"
-      >
-        <div class="text-sm font-medium text-zinc-300">
-          {{ formatDateKey(day.dateKey) }}
-        </div>
-        <div class="text-xs text-zinc-400">
-          Total:
-          <span class="font-semibold text-zinc-200">{{
-            formatAmount(day.total)
-          }}</span>
-        </div>
-        <ul class="mt-2 space-y-0.5 text-xs">
-          <li
-            v-for="e in day.events"
-            :key="e.id ?? e.at"
-            class="flex items-center gap-2"
-          >
-            <span class="w-8">{{ formatTime(e.at) }}</span>
-            <span>–</span>
-            <span>{{ formatAmount(e.amount) }}</span>
-            <UButton
-              color="neutral"
-              variant="ghost"
-              size="xs"
-              square
-              :disabled="typeof e.id !== 'number' || loading"
-              @click="onEditClick(e)"
-              class="-ml-1"
+    <UCarousel
+      :items="days"
+      dots
+      class="w-full"
+      :ui="{ item: 'basis-1/2' }"
+      :start-index="carouselStartIndex"
+      align="start"
+    >
+      <template #default="{ item: day }">
+        <div
+          :key="day.dateKey"
+          class="flex flex-col rounded-lg bg-zinc-800/50 p-3"
+        >
+          <div class="text-sm font-medium text-zinc-300">
+            {{ formatDateKey(day.dateKey) }}
+          </div>
+          <div class="text-xs text-zinc-400">
+            Total:
+            <span class="font-semibold text-zinc-200">{{
+              formatAmount(day.total)
+            }}</span>
+          </div>
+          <ul class="mt-2 space-y-0.5 text-xs">
+            <li
+              v-for="e in day.events"
+              :key="e.id ?? e.at"
+              class="flex items-center gap-2"
             >
-              <PenIcon />
-            </UButton>
-          </li>
-        </ul>
-      </div>
-    </div>
+              <span class="w-8">{{ formatTime(e.at) }}</span>
+              <span>–</span>
+              <span>{{ formatAmount(e.amount) }}</span>
+              <UButton
+                color="neutral"
+                variant="ghost"
+                size="xs"
+                square
+                :disabled="typeof e.id !== 'number' || loading"
+                @click="onEditClick(e)"
+                class="-ml-1"
+              >
+                <PenIcon />
+              </UButton>
+            </li>
+          </ul>
+        </div>
+      </template>
+    </UCarousel>
 
     <UModal
       v-model:open="isModalOpen"
