@@ -70,11 +70,13 @@ const onSaveEdit = () => {
               color="neutral"
               variant="ghost"
               size="xs"
-              icon="i-lucide-pencil"
-              :ui="{ leadingIcon: 'size-3' }"
+              square
               :disabled="typeof e.id !== 'number' || loading"
               @click="onEditClick(e)"
-            />
+              class="-ml-1"
+            >
+              <PenIcon />
+            </UButton>
           </li>
         </ul>
       </div>
