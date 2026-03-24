@@ -1,6 +1,6 @@
 import { computed, onMounted, ref, shallowRef } from 'vue'
 import type { DayData, DrinkRecord, Totals } from '../types/water'
-import { addDrink, getAllDrinks } from '../utils/waterStorage'
+import { addDrink, getAllDrinks, updateDrinkTime as updateDrinkAt } from '../utils/waterStorage'
 
 const pad = (n: number) => (n < 10 ? `0${n}` : `${n}`)
 
@@ -116,6 +116,42 @@ export function useWaterTracker() {
     }
   }
 
+  async function updateDrinkTime(record: DrinkRecord, localTime: string) {
+    if (!import.meta.client) return
+    if (typeof record.id !== 'number') return
+    if (!/^\d{2}:\d{2}$/.test(localTime)) return
+
+    const sourceDate = new Date(record.at)
+    if (Number.isNaN(sourceDate.getTime())) return
+
+    const [hours, minutes] = localTime.split(':').map(Number)
+    if (
+      Number.isNaN(hours) ||
+      Number.isNaN(minutes) ||
+      hours < 0 ||
+      hours > 23 ||
+      minutes < 0 ||
+      minutes > 59
+    ) {
+      return
+    }
+
+    const nextDate = new Date(sourceDate)
+    nextDate.setHours(hours, minutes, 0, 0)
+
+    try {
+      loading.value = true
+      await updateDrinkAt(record.id, nextDate.toISOString())
+      await refreshData()
+      error.value = null
+    } catch (e) {
+      console.error(e)
+      error.value = 'Failed to update data'
+    } finally {
+      loading.value = false
+    }
+  }
+
   onMounted(async () => {
     if (!import.meta.client) return
 
@@ -138,5 +174,6 @@ export function useWaterTracker() {
     loading,
     error,
     drink,
+    updateDrinkTime,
   }
 }

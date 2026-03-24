@@ -6,7 +6,7 @@ const lastAmountCookie = useCookie<number | null>('water-last-amount', {
 })
 
 const count = ref(lastAmountCookie.value ?? 1.5)
-const { total, totals, lastThreeDays, loading, error, drink } =
+const { total, totals, lastThreeDays, loading, error, drink, updateDrinkTime } =
   useWaterTracker()
 
 const onDrink = () => {
@@ -34,6 +34,11 @@ const onDrink = () => {
 
     <WaterTotalsCard v-if="totals" :totals="totals" />
 
-    <LazyWaterHistoryCard v-if="lastThreeDays.length" :days="lastThreeDays" />
+    <LazyWaterHistoryCard
+      v-if="lastThreeDays.length"
+      :days="lastThreeDays"
+      :loading="loading"
+      @edit-time="updateDrinkTime"
+    />
   </div>
 </template>
