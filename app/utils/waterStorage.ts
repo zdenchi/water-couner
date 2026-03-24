@@ -95,3 +95,32 @@ export async function updateDrinkTime(id: number, at: string): Promise<void> {
       reject(getRequest.error ?? new Error('Ошибка чтения записи'))
   })
 }
+
+export async function updateDrinkRecord(
+  id: number,
+  at: string,
+  amount: number,
+): Promise<void> {
+  const db = await openDb()
+  await new Promise<void>((resolve, reject) => {
+    const tx = db.transaction(STORE_NAME, 'readwrite')
+    const store = tx.objectStore(STORE_NAME)
+    const getRequest = store.get(id)
+
+    getRequest.onsuccess = () => {
+      const existing = getRequest.result as DrinkRecord | undefined
+      if (!existing) {
+        reject(new Error('Запись не найдена'))
+        return
+      }
+
+      const updateRequest = store.put({ ...existing, id, at, amount })
+      updateRequest.onsuccess = () => resolve()
+      updateRequest.onerror = () =>
+        reject(updateRequest.error ?? new Error('Ошибка обновления'))
+    }
+
+    getRequest.onerror = () =>
+      reject(getRequest.error ?? new Error('Ошибка чтения записи'))
+  })
+}

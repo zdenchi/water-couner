@@ -9,12 +9,13 @@ const props = defineProps<{
 const carouselStartIndex = computed(() => Math.max(props.days.length - 2, 0))
 
 const emit = defineEmits<{
-  (e: 'edit-time', record: DrinkRecord, time: string): void
+  (e: 'edit-record', record: DrinkRecord, time: string, amount: number): void
 }>()
 
 const isModalOpen = ref(false)
 const selectedRecord = ref<DrinkRecord | null>(null)
 const editableTime = ref('')
+const editableAmount = ref<number>(1)
 
 const toLocalTimeInput = (iso: string) => {
   const date = new Date(iso)
@@ -27,14 +28,21 @@ const toLocalTimeInput = (iso: string) => {
 const onEditClick = (record: DrinkRecord) => {
   selectedRecord.value = record
   editableTime.value = toLocalTimeInput(record.at)
+  editableAmount.value = record.amount
   isModalOpen.value = true
 }
 
 const onSaveEdit = () => {
   if (!selectedRecord.value) return
   if (!/^\d{2}:\d{2}$/.test(editableTime.value)) return
+  if (Number.isNaN(editableAmount.value) || editableAmount.value <= 0) return
 
-  emit('edit-time', selectedRecord.value, editableTime.value)
+  emit(
+    'edit-record',
+    selectedRecord.value,
+    editableTime.value,
+    editableAmount.value,
+  )
   isModalOpen.value = false
 }
 </script>
@@ -93,8 +101,8 @@ const onSaveEdit = () => {
 
     <UModal
       v-model:open="isModalOpen"
-      title="Изменить время"
-      description="Выберите новое время приёма воды"
+      title="Изменить запись"
+      description="Изменить время или количество воды"
     >
       <template #body>
         <div class="flex items-center gap-2">
@@ -105,11 +113,20 @@ const onSaveEdit = () => {
             class="w-36"
             :disabled="loading"
           />
+          <UInputNumber
+            v-model="editableAmount"
+            size="sm"
+            class="w-28"
+            :disabled="loading"
+            :min="0.1"
+            :max="10"
+            :step="0.1"
+          />
           <UButton
             color="warning"
             variant="subtle"
             size="sm"
-            :disabled="!editableTime || loading"
+            :disabled="!editableTime || loading || editableAmount <= 0"
             @click="onSaveEdit"
             >Сохранить</UButton
           >

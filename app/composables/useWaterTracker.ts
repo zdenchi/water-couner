@@ -3,7 +3,7 @@ import type { DayData, DrinkRecord, Totals } from '../types/water'
 import {
   addDrink,
   getAllDrinks,
-  updateDrinkTime as updateDrinkAt,
+  updateDrinkRecord as updateDrinkInStorage,
 } from '../utils/waterStorage'
 
 const pad = (n: number) => (n < 10 ? `0${n}` : `${n}`)
@@ -120,10 +120,15 @@ export function useWaterTracker() {
     }
   }
 
-  async function updateDrinkTime(record: DrinkRecord, localTime: string) {
+  async function updateDrinkRecord(
+    record: DrinkRecord,
+    localTime: string,
+    amount: number,
+  ) {
     if (!import.meta.client) return
     if (typeof record.id !== 'number') return
     if (!/^\d{2}:\d{2}$/.test(localTime)) return
+    if (Number.isNaN(amount) || amount <= 0) return
 
     const sourceDate = new Date(record.at)
     if (Number.isNaN(sourceDate.getTime())) return
@@ -151,7 +156,7 @@ export function useWaterTracker() {
 
     try {
       loading.value = true
-      await updateDrinkAt(record.id, nextDate.toISOString())
+      await updateDrinkInStorage(record.id, nextDate.toISOString(), amount)
       await refreshData()
       error.value = null
     } catch (e) {
@@ -184,6 +189,6 @@ export function useWaterTracker() {
     loading,
     error,
     drink,
-    updateDrinkTime,
+    updateDrinkRecord,
   }
 }

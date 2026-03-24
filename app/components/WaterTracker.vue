@@ -6,7 +6,7 @@ const lastAmountCookie = useCookie<number | null>('water-last-amount', {
 })
 
 const count = ref(lastAmountCookie.value ?? 1.5)
-const { total, totals, lastThreeDays, loading, error, drink, updateDrinkTime } =
+const { total, totals, lastThreeDays, loading, error, drink, updateDrinkRecord } =
   useWaterTracker()
 const buildMarker = useRuntimeConfig().public.buildMarker
 
@@ -39,7 +39,7 @@ const onDrink = () => {
       v-if="lastThreeDays.length"
       :days="lastThreeDays"
       :loading="loading"
-      @edit-time="updateDrinkTime"
+      @edit-record="updateDrinkRecord"
     />
 
     <div class="text-[8px] text-zinc-500">BUILD_TEST: {{ buildMarker }}</div>
