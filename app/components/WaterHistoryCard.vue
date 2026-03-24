@@ -14,37 +14,25 @@ const emit = defineEmits<{
 
 const isModalOpen = ref(false)
 const selectedRecord = ref<DrinkRecord | null>(null)
-const editableTime = ref('')
-const editableAmount = ref<number>(1)
-
-const toLocalTimeInput = (iso: string) => {
-  const date = new Date(iso)
-  if (Number.isNaN(date.getTime())) return ''
-  const hh = String(date.getHours()).padStart(2, '0')
-  const mm = String(date.getMinutes()).padStart(2, '0')
-  return `${hh}:${mm}`
-}
 
 const onEditClick = (record: DrinkRecord) => {
   selectedRecord.value = record
-  editableTime.value = toLocalTimeInput(record.at)
-  editableAmount.value = record.amount
   isModalOpen.value = true
 }
 
-const onSaveEdit = () => {
+const onSaveEdit = (time: string, amount: number) => {
   if (!selectedRecord.value) return
-  if (!/^\d{2}:\d{2}$/.test(editableTime.value)) return
-  if (Number.isNaN(editableAmount.value) || editableAmount.value <= 0) return
 
-  emit(
-    'edit-record',
-    selectedRecord.value,
-    editableTime.value,
-    editableAmount.value,
-  )
+  emit('edit-record', selectedRecord.value, time, amount)
   isModalOpen.value = false
+  selectedRecord.value = null
 }
+
+watch(isModalOpen, (open) => {
+  if (!open) {
+    selectedRecord.value = null
+  }
+})
 </script>
 
 <template>
@@ -99,39 +87,11 @@ const onSaveEdit = () => {
       </template>
     </UCarousel>
 
-    <UModal
+    <WaterEditRecordModal
       v-model:open="isModalOpen"
-      title="Изменить запись"
-      description="Изменить время или количество воды"
-    >
-      <template #body>
-        <div class="flex items-center gap-2">
-          <UInput
-            v-model="editableTime"
-            type="time"
-            size="sm"
-            class="w-36"
-            :disabled="loading"
-          />
-          <UInputNumber
-            v-model="editableAmount"
-            size="sm"
-            class="w-28"
-            :disabled="loading"
-            :min="0.1"
-            :max="10"
-            :step="0.1"
-          />
-          <UButton
-            color="warning"
-            variant="subtle"
-            size="sm"
-            :disabled="!editableTime || loading || editableAmount <= 0"
-            @click="onSaveEdit"
-            >Сохранить</UButton
-          >
-        </div>
-      </template>
-    </UModal>
+      :record="selectedRecord"
+      :loading="loading"
+      @save="onSaveEdit"
+    />
   </div>
 </template>
