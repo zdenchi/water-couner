@@ -8,6 +8,7 @@ const lastAmountCookie = useCookie<number | null>('water-last-amount', {
 const count = ref(lastAmountCookie.value ?? 1.5)
 const { total, totals, lastThreeDays, loading, error, drink, updateDrinkTime } =
   useWaterTracker()
+const buildMarker = useRuntimeConfig().public.buildMarker
 
 const onDrink = () => {
   const amount = Number(count.value)
@@ -40,5 +41,7 @@ const onDrink = () => {
       :loading="loading"
       @edit-time="updateDrinkTime"
     />
+
+    <div class="text-[8px] text-zinc-500">BUILD_TEST: {{ buildMarker }}</div>
   </div>
 </template>

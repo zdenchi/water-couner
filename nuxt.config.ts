@@ -4,6 +4,11 @@ const isDev = import.meta.dev
 export default defineNuxtConfig({
   compatibilityDate: '2025-07-15',
   devtools: { enabled: true },
+  runtimeConfig: {
+    public: {
+      buildMarker: new Date().toISOString(),
+    },
+  },
 
   css: ['~/assets/css/main.css'],
 
