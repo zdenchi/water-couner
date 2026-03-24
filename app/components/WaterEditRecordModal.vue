@@ -53,8 +53,8 @@ const onSaveEdit = () => {
       <div class="flex items-center gap-2">
         <UInputTime
           v-model="editableTime"
-          type="time"
           size="sm"
+          :hour-cycle="24"
           class="w-full"
           :disabled="loading"
         />
