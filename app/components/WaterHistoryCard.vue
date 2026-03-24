@@ -9,7 +9,7 @@ const props = defineProps<{
 const carouselStartIndex = computed(() => Math.max(props.days.length - 2, 0))
 
 const emit = defineEmits<{
-  (e: 'edit-record', record: DrinkRecord, time: string, amount: number): void
+  (e: 'edit-record', record: DrinkRecord, at: string, amount: number): void
 }>()
 
 const isModalOpen = ref(false)
@@ -20,10 +20,10 @@ const onEditClick = (record: DrinkRecord) => {
   isModalOpen.value = true
 }
 
-const onSaveEdit = (time: string, amount: number) => {
+const onSaveEdit = (at: string, amount: number) => {
   if (!selectedRecord.value) return
 
-  emit('edit-record', selectedRecord.value, time, amount)
+  emit('edit-record', selectedRecord.value, at, amount)
   isModalOpen.value = false
   selectedRecord.value = null
 }

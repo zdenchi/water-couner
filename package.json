@@ -12,6 +12,7 @@
   "dependencies": {
     "@iconify-json/lucide": "^1.2.98",
     "@iconify-json/streamline-sharp-color": "^1.2.2",
+    "@internationalized/date": "^3.12.0",
     "@nuxt/fonts": "0.14.0",
     "@nuxt/ui": "4.5.1",
     "@vite-pwa/nuxt": "1.1.1",

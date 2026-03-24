@@ -122,41 +122,18 @@ export function useWaterTracker() {
 
   async function updateDrinkRecord(
     record: DrinkRecord,
-    localTime: string,
+    at: string,
     amount: number,
   ) {
     if (!import.meta.client) return
     if (typeof record.id !== 'number') return
-    if (!/^\d{2}:\d{2}$/.test(localTime)) return
     if (Number.isNaN(amount) || amount <= 0) return
-
-    const sourceDate = new Date(record.at)
-    if (Number.isNaN(sourceDate.getTime())) return
-
-    const parts = localTime.split(':')
-    const hourPart = parts[0]
-    const minutePart = parts[1]
-    if (!hourPart || !minutePart) return
-
-    const hours = Number(hourPart)
-    const minutes = Number(minutePart)
-    if (
-      Number.isNaN(hours) ||
-      Number.isNaN(minutes) ||
-      hours < 0 ||
-      hours > 23 ||
-      minutes < 0 ||
-      minutes > 59
-    ) {
-      return
-    }
-
-    const nextDate = new Date(sourceDate)
-    nextDate.setHours(hours, minutes, 0, 0)
+    const parsedAt = new Date(at)
+    if (Number.isNaN(parsedAt.getTime())) return
 
     try {
       loading.value = true
-      await updateDrinkInStorage(record.id, nextDate.toISOString(), amount)
+      await updateDrinkInStorage(record.id, parsedAt.toISOString(), amount)
       await refreshData()
       error.value = null
     } catch (e) {
