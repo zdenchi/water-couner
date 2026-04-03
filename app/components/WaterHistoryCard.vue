@@ -41,7 +41,6 @@ watch(isModalOpen, (open) => {
   >
     <UCarousel
       :items="days"
-      dots
       class="w-full"
       :ui="{ item: 'basis-1/2' }"
       :start-index="carouselStartIndex"
