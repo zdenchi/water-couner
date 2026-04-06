@@ -19,7 +19,7 @@ const onDrinkClick = () => {
 </script>
 
 <template>
-  <div class="flex w-72 items-center gap-2">
+  <div class="flex w-64 items-center gap-2">
     <UInputNumber
       aria-label="Amount in litres"
       size="lg"
