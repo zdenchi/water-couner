@@ -55,13 +55,13 @@ const onSaveEdit = () => {
           v-model="editableTime"
           size="sm"
           :hour-cycle="24"
-          class="w-full"
+          class="w-auto"
           :disabled="loading"
         />
         <UInputNumber
           v-model="editableAmount"
           size="sm"
-          class="w-full"
+          class="w-24"
           :disabled="loading"
           :min="0.1"
           :max="10"
