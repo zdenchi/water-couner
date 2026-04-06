@@ -1,11 +1,9 @@
-import { useStorage } from '@vueuse/core'
 import { isPwaInstalled } from '~/utils/pwa'
 
 export function usePwaInstallPrompt() {
   const { $pwa } = useNuxtApp()
   const toast = useToast()
 
-  const offerInstallPrompt = useStorage('offerInstallPrompt', true)
   const isPwaInstalledValue = ref(false)
 
   const updatePwaInstalled = () => {
@@ -15,7 +13,6 @@ export function usePwaInstallPrompt() {
   const showInstallToast = () => {
     if (!import.meta.client) return
     if (isPwaInstalledValue.value) return
-    if (!offerInstallPrompt.value) return
     if (!$pwa?.showInstallPrompt) return
 
     toast.add({
@@ -54,7 +51,6 @@ export function usePwaInstallPrompt() {
   function installPwa() {
     if ($pwa?.showInstallPrompt) {
       $pwa.install()
-      offerInstallPrompt.value = false
     }
   }
 
@@ -80,7 +76,6 @@ export function usePwaInstallPrompt() {
   )
 
   return {
-    offerInstallPrompt,
     isPwaInstalledValue,
   }
 }
