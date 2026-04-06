@@ -6,8 +6,15 @@ const lastAmountCookie = useCookie<number | null>('water-last-amount', {
 })
 
 const count = ref(lastAmountCookie.value ?? 1.5)
-const { total, totals, lastThreeDays, loading, error, drink, updateDrinkRecord } =
-  useWaterTracker()
+const {
+  total,
+  totals,
+  lastThreeDays,
+  loading,
+  error,
+  drink,
+  updateDrinkRecord,
+} = useWaterTracker()
 const buildMarker = useRuntimeConfig().public.buildMarker
 
 const onDrink = () => {
@@ -22,7 +29,7 @@ const onDrink = () => {
 </script>
 
 <template>
-  <div class="m-2 flex flex-col gap-4 rounded-lg bg-zinc-800 p-2">
+  <div class="flex h-full flex-col gap-4 rounded-lg bg-zinc-800 p-2">
     <div class="flex items-center gap-4">
       <WaterControls
         v-model:count="count"

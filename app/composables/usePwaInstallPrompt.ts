@@ -68,7 +68,7 @@ export function usePwaInstallPrompt() {
         duration: 0,
         id: 'install-pwa',
         ui: {
-          root: 'relative p-6 rounded-xl bg-zinc-800',
+          root: 'relative p-6 rounded-xl bg-zinc-900/50',
           title: 'text-lg font-semibold text-white',
           description: 'text-base text-muted',
           close: 'absolute right-2 top-2 text-white hover:text-white/80',
