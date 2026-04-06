@@ -10,42 +10,76 @@ export function usePwaInstallPrompt() {
     isPwaInstalledValue.value = isPwaInstalled()
   }
 
+  const isIosDevice = () => {
+    if (!import.meta.client) return false
+
+    const ua = window.navigator.userAgent.toLowerCase()
+    const isIos = /iphone|ipad|ipod/.test(ua)
+    const isIpadOs = navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1
+
+    return isIos || isIpadOs
+  }
+
   const showInstallToast = () => {
     if (!import.meta.client) return
     if (isPwaInstalledValue.value) return
-    if (!$pwa?.showInstallPrompt) return
 
-    toast.add({
-      title: 'Install PWA',
-      description: 'Install the app to use it offline and on your home screen.',
-      duration: 0,
-      id: 'install-pwa',
-      ui: {
-        root: 'relative p-6 rounded-xl',
-        title: 'text-lg font-semibold',
-        description: 'text-base',
-        actions: 'mt-3 gap-2',
-        close: 'absolute right-2 top-2 text-white hover:text-white/80',
-      },
-      close: {
-        size: 'xs',
-        color: 'neutral',
-        variant: 'ghost',
-      },
-      closeIcon: 'i-lucide-x',
-      actions: [
-        {
-          variant: 'solid',
-          color: 'success',
-          size: 'lg',
-          label: 'Install',
-          onClick: (e) => {
-            e.stopPropagation()
-            installPwa()
-          },
+    if ($pwa?.showInstallPrompt) {
+      toast.add({
+        title: 'Install PWA',
+        description: 'Install the app to use it offline and on your home screen.',
+        duration: 0,
+        id: 'install-pwa',
+        ui: {
+          root: 'relative p-6 rounded-xl',
+          title: 'text-lg font-semibold',
+          description: 'text-base',
+          actions: 'mt-3 gap-2',
+          close: 'absolute right-2 top-2 text-white hover:text-white/80',
         },
-      ],
-    })
+        close: {
+          size: 'xs',
+          color: 'neutral',
+          variant: 'ghost',
+        },
+        closeIcon: 'i-lucide-x',
+        actions: [
+          {
+            variant: 'solid',
+            color: 'success',
+            size: 'lg',
+            label: 'Install',
+            onClick: (e) => {
+              e.stopPropagation()
+              installPwa()
+            },
+          },
+        ],
+      })
+      return
+    }
+
+    if (isIosDevice()) {
+      toast.add({
+        title: 'Add to Home Screen',
+        description:
+          'На iPhone: нажмите «Поделиться», затем «На экран “Домой”».',
+        duration: 0,
+        id: 'install-pwa',
+        ui: {
+          root: 'relative p-6 rounded-xl',
+          title: 'text-lg font-semibold',
+          description: 'text-base',
+          close: 'absolute right-2 top-2 text-white hover:text-white/80',
+        },
+        close: {
+          size: 'xs',
+          color: 'neutral',
+          variant: 'ghost',
+        },
+        closeIcon: 'i-lucide-x',
+      })
+    }
   }
 
   function installPwa() {
