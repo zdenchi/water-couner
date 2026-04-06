@@ -15,9 +15,10 @@ export function usePwaInstallPrompt() {
 
     const ua = window.navigator.userAgent.toLowerCase()
     const isIos = /iphone|ipad|ipod/.test(ua)
-    const isIpadOs = navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1
+    // iPadOS 13+ Safari uses a desktop-like UA; avoid deprecated navigator.platform
+    const isIpadDesktopUa = navigator.maxTouchPoints > 1 && /macintosh/.test(ua)
 
-    return isIos || isIpadOs
+    return isIos || isIpadDesktopUa
   }
 
   const showInstallToast = () => {
@@ -27,7 +28,8 @@ export function usePwaInstallPrompt() {
     if ($pwa?.showInstallPrompt) {
       toast.add({
         title: 'Install PWA',
-        description: 'Install the app to use it offline and on your home screen.',
+        description:
+          'Install the app to use it offline and on your home screen.',
         duration: 0,
         id: 'install-pwa',
         ui: {
@@ -61,13 +63,12 @@ export function usePwaInstallPrompt() {
 
     if (isIosDevice()) {
       toast.add({
-        title: 'Add to Home Screen',
-        description:
-          'На iPhone: нажмите «Поделиться», затем «На экран “Домой”».',
+        title: 'Добавить на главный экран',
+        description: 'Нажмите «Поделиться», затем «На экран “Домой”».',
         duration: 0,
         id: 'install-pwa',
         ui: {
-          root: 'relative p-6 rounded-xl',
+          root: 'relative p-6 rounded-xl bg-zinc-800',
           title: 'text-lg font-semibold',
           description: 'text-base',
           close: 'absolute right-2 top-2 text-white hover:text-white/80',
