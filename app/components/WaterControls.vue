@@ -26,7 +26,6 @@ const onDrinkClick = () => {
       :model-value="count"
       @update:model-value="onUpdateCount"
       :min="0.5"
-      :max="5"
       :step="0.1"
       :increment="{
         color: 'neutral',

@@ -2,6 +2,7 @@
 import { useWaterTracker } from '../composables/useWaterTracker'
 
 const lastAmountCookie = useCookie<number | null>('water-last-amount', {
+  maxAge: 60 * 60 * 24 * 30, // 30 days
   default: () => 1.5,
 })
 
