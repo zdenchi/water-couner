@@ -7,6 +7,9 @@ export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       buildMarker: new Date().toISOString(),
+      sentry: {
+        dsn: process.env.NUXT_PUBLIC_SENTRY_DSN,
+      },
     },
   },
 
@@ -20,6 +23,7 @@ export default defineNuxtConfig({
   },
 
   modules: [
+    '@sentry/nuxt/module',
     '@nuxt/fonts',
     '@nuxt/ui',
     '@vite-pwa/nuxt',
@@ -35,6 +39,12 @@ export default defineNuxtConfig({
         weights: [300, 400, 500, 600, 700],
       },
     ],
+  },
+
+  sentry: {
+    org: 'capp-fun',
+    project: 'b-counter',
+    authToken: process.env.SENTRY_AUTH_TOKEN,
   },
 
   routeRules: {
