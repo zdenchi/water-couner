@@ -78,6 +78,7 @@ export default defineNuxtConfig({
     },
     workbox: {
       globPatterns: ['**/*.{js,css,html,png,jpg,jpeg,svg,webp}'],
+      navigateFallbackDenylist: [/^\/jackpot\.png$/, /^\/log\/?$/],
     },
   },
 })
