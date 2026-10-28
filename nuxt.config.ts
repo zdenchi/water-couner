@@ -41,10 +41,6 @@ export default defineNuxtConfig({
     '/': { prerender: true },
   },
 
-  nitro: {
-    preset: 'vercel',
-  },
-
   pwa: {
     registerType: 'autoUpdate',
     client: { installPrompt: true },

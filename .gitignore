@@ -148,3 +148,5 @@ out
 /prisma/generated
 /notes/*
 FARM.md
+
+.vercel
