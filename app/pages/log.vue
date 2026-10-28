@@ -7,9 +7,14 @@ type Visit = {
   at: string
 }
 
-const { data, pending } = await useFetch<Visit[]>('/api/visits')
+const { data, pending, refresh } = await useFetch<Visit[]>('/api/visits')
 
 const visits = computed(() => [...(data.value ?? [])].reverse())
+const initialLoading = computed(() => pending.value && !data.value)
+
+useIntervalFn(() => {
+  void refresh()
+}, 2000)
 
 const columns: TableColumn<Visit>[] = [
   {
@@ -68,7 +73,7 @@ function formatTime(value: string) {
       <UTable
         :data="visits"
         :columns="columns"
-        :loading="pending"
+        :loading="initialLoading"
         sticky
         empty="No visits yet"
         :ui="{

@@ -1,19 +1,21 @@
 export default defineEventHandler((event) => {
   if (event.method !== 'GET') return
 
-  const path = getRequestURL(event).pathname
+  const url = getRequestURL(event)
+  const path = url.pathname
+  const fetchDestination = getHeader(event, 'sec-fetch-dest')
   if (
     path.startsWith('/_nuxt') ||
-    path.startsWith('/icons') ||
     path.startsWith('/api') ||
-    path.includes('.')
+    !path.includes('.') ||
+    (fetchDestination && fetchDestination !== 'document')
   ) {
     return
   }
 
   addVisit({
     ip: getRequestIP(event, { xForwardedFor: true }) ?? 'unknown',
-    path,
+    path: `${path}${url.search}`,
     at: new Date().toISOString(),
   })
 })

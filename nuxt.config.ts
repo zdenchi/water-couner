@@ -42,7 +42,7 @@ export default defineNuxtConfig({
   },
 
   nitro: {
-    preset: 'vercel-static',
+    preset: 'vercel',
   },
 
   pwa: {
